@@ -8,685 +8,94 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --obsidian: #0a0a0a;
-    --obsidian-light: #1a1515;
-    --magma: #ff4500;
-    --magma-soft: #ff6b35;
-    --gold: #ffd700;
-    --gold-dim: #b8860b;
-    --smoke: #888888;
-    --smoke-dark: #333333;
-    --sulphur: #e6e600;
-    --char: #2d1f1f;
-  }
-  *, *::before, *::after {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  html {
-    scroll-behavior: smooth;
-  }
-  body {
-    font-family: 'Merriweather', serif;
-    background: var(--obsidian);
-    color: #e8ddd0;
-    overflow-x: hidden;
-    min-height: 100vh;
-  }
-  #volcanic-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-  }
-  .kintsugi-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
-    opacity: 0.55;
-    mix-blend-mode: screen;
-  }
-  .kintsugi-overlay path {
-    fill: none;
-    stroke-width: 1.5;
-    stroke-linecap: round;
-    filter: drop-shadow(0 0 6px var(--magma)) drop-shadow(0 0 12px var(--gold));
-    animation: kintsugi-pulse 4s ease-in-out infinite alternate;
-  }
-  @keyframes kintsugi-pulse {
-    0% { opacity: 0.5; stroke-width: 1.2; }
-    100% { opacity: 0.9; stroke-width: 2.2; }
-  }
-  .hero {
-    position: relative;
-    z-index: 10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 2rem;
-  }
-  .hero-title {
-    font-family: 'Cinzel Decorative', cursive;
-    font-size: clamp(3rem, 10vw, 7rem);
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    line-height: 1.1;
-    background: linear-gradient(
-      180deg,
-      #fff8e7 0%,
-      var(--gold) 25%,
-      var(--magma) 60%,
-      #8b2500 100%
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: none;
-    filter: drop-shadow(0 0 20px rgba(255, 69, 0, 0.4)) drop-shadow(0 0 40px rgba(255, 215, 0, 0.15));
-    margin-bottom: 1.5rem;
-  }
-  .hero-subtitle {
-    font-family: 'Cinzel Decorative', cursive;
-    font-size: clamp(0.9rem, 2.5vw, 1.3rem);
-    color: var(--smoke);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    margin-bottom: 3rem;
-    animation: subtitle-fade 3s ease-out forwards;
-    opacity: 0;
-  }
-  @keyframes subtitle-fade {
-    to { opacity: 0.7; }
-  }
-  .scroll-hint {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
-    color: var(--smoke);
-    text-transform: uppercase;
-    animation: bounce 2s infinite;
-  }
-  @keyframes bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(8px); }
-  }
-  .narrative-section {
-    position: relative;
-    z-index: 10;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6rem 2rem;
-  }
-  .narrative-content {
-    max-width: 800px;
-    text-align: center;
-    background: rgba(10, 10, 10, 0.75);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 69, 0, 0.15);
-    padding: 4rem 3rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .narrative-content::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--magma), var(--gold), transparent);
-  }
-  .narrative-content::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 69, 0, 0.3), transparent);
-  }
-  .section-number {
-    font-family: 'Cinzel Decorative', cursive;
-    font-size: 0.85rem;
-    color: var(--magma-soft);
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-    display: block;
-  }
-  .section-title {
-    font-family: 'Cinzel Decorative', cursive;
-    font-size: clamp(1.8rem, 5vw, 3rem);
-    font-weight: 700;
-    color: var(--gold);
-    margin-bottom: 1.5rem;
-    line-height: 1.2;
-  }
-  .section-body {
-    font-size: 1.05rem;
-    line-height: 2;
-    color: #c8b8a8;
-    font-weight: 300;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  .section-body em {
-    color: var(--magma-soft);
-    font-style: italic;
-  }
-  .ember-divider {
-    width: 60px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--magma), var(--gold));
-    margin: 2rem auto;
-    border-radius: 2px;
-    box-shadow: 0 0 10px var(--magma);
-  }
-  .obsidian-frame {
-    position: absolute;
-    inset: 8px;
-    border: 1px solid rgba(255, 215, 0, 0.06);
-    pointer-events: none;
-  }
-  .heat-haze {
-    position: fixed;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(255, 69, 0, 0.03) 100%);
-    animation: heat-shift 8s ease-in-out infinite;
-  }
-  @keyframes heat-shift {
-    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
-    50% { transform: scale(1.05) rotate(1deg); opacity: 1; }
-  }
-  footer {
-    position: relative;
-    z-index: 10;
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--smoke-dark);
-    font-size: 0.8rem;
-    letter-spacing: 0.15em;
-  }
+  :root{--obsidian:#0a0a0a;--obsidian-light:#1a1515;--magma:#ff4500;--magma-soft:#ff6b35;--gold:#ffd700;--gold-dim:#b8860b;--smoke:#888888;--smoke-dark:#333333;--sulphur:#e6e600;--char:#2d1f1f;}
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Merriweather',serif;background:var(--obsidian);color:#e8ddd0;overflow-x:hidden;min-height:100vh;}
+  #volcanic-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+  .kintsugi-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:0.55;mix-blend-mode:screen;}
+  .kintsugi-overlay path{fill:none;stroke-width:1.5;stroke-linecap:round;filter:drop-shadow(0 0 6px var(--magma)) drop-shadow(0 0 12px var(--gold));animation:kintsugi-pulse 4s ease-in-out infinite alternate;}
+  @keyframes kintsugi-pulse{0%{opacity:0.5;stroke-width:1.2;}100%{opacity:0.9;stroke-width:2.2;}}
+  .hero{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;}
+  .hero-title{font-family:'Cinzel Decorative',cursive;font-size:clamp(3rem,10vw,7rem);font-weight:900;letter-spacing:0.08em;line-height:1.1;background:linear-gradient(180deg,#fff8e7 0%,var(--gold) 25%,var(--magma) 60%,#8b2500 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px rgba(255,69,0,0.4)) drop-shadow(0 0 40px rgba(255,215,0,0.15));margin-bottom:1.5rem;}
+  .hero-subtitle{font-family:'Cinzel Decorative',cursive;font-size:clamp(0.9rem,2.5vw,1.3rem);color:var(--smoke);letter-spacing:0.3em;text-transform:uppercase;margin-bottom:3rem;animation:subtitle-fade 3s ease-out forwards;opacity:0;}
+  @keyframes subtitle-fade{to{opacity:0.7;}}
+  .scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-size:0.75rem;letter-spacing:0.2em;color:var(--smoke);text-transform:uppercase;animation:bounce 2s infinite;}
+  @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
+  .narrative-section{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:6rem 2rem;}
+  .narrative-content{max-width:800px;text-align:center;background:rgba(10,10,10,0.75);backdrop-filter:blur(6px);border:1px solid rgba(255,69,0,0.15);padding:4rem 3rem;position:relative;overflow:hidden;}
+  .narrative-content::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--magma),var(--gold),transparent);}
+  .section-number{font-family:'Cinzel Decorative',cursive;font-size:0.85rem;color:var(--magma-soft);letter-spacing:0.4em;text-transform:uppercase;margin-bottom:1.5rem;display:block;}
+  .section-title{font-family:'Cinzel Decorative',cursive;font-size:clamp(1.8rem,5vw,3rem);font-weight:700;color:var(--gold);margin-bottom:1.5rem;line-height:1.2;}
+  .section-body{font-size:1.05rem;line-height:2;color:#c8b8a8;font-weight:300;max-width:600px;margin:0 auto;}
+  .section-body em{color:var(--magma-soft);font-style:italic;}
+  .ember-divider{width:60px;height:2px;background:linear-gradient(90deg,var(--magma),var(--gold));margin:2rem auto;border-radius:2px;box-shadow:0 0 10px var(--magma);}
+  .obsidian-frame{position:absolute;inset:8px;border:1px solid rgba(255,215,0,0.06);pointer-events:none;}
+  .heat-haze{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(circle at 50% 50%,transparent 40%,rgba(255,69,0,0.03) 100%);animation:heat-shift 8s ease-in-out infinite;}
+  @keyframes heat-shift{0%,100%{transform:scale(1) rotate(0deg);opacity:0.6;}50%{transform:scale(1.05) rotate(1deg);opacity:1;}}
+  footer{position:relative;z-index:10;text-align:center;padding:4rem 2rem;color:var(--smoke-dark);font-size:0.8rem;letter-spacing:0.15em;}
 </style>
 </head>
 <body>
-
 <canvas id="volcanic-canvas"></canvas>
-
 <div class="heat-haze"></div>
-
 <svg class="kintsugi-overlay" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-  <path stroke="#ff4500" d="M200,100 Q280,180 240,280 T300,450 T220,600 T350,750 T280,900" />
-  <path stroke="#ffd700" d="M1800,150 Q1700,250 1750,350 T1650,500 T1720,680 T1600,850 T1680,980" />
-  <path stroke="#ff6b35" d="M960,0 Q940,120 1000,220 T920,380 T980,540 T930,720 T970,900 T950,1080" />
-  <path stroke="#b8860b" d="M0,540 Q120,520 200,580 T350,540 T480,600 T620,530 T750,590" />
-  <path stroke="#ff4500" d="M1920,540 Q1800,560 1720,500 T1580,550 T1450,490 T1320,550 T1200,500" />
-  <path stroke="#e6e600" d="M400,200 Q450,280 520,250 T620,320 T580,420 T660,500 T620,620" opacity="0.6" />
-  <path stroke="#ffd700" d="M1500,800 Q1450,720 1380,780 T1280,700 T1320,600 T1240,520 T1280,400" opacity="0.7" />
-  <path stroke="#ff4500" d="M800,1080 Q820,960 880,880 T820,720 T900,580 T840,420 T920,280 T880,120 T900,0" />
-  <path stroke="#ff6b35" d="M1100,0 Q1080,100 1140,200 T1060,360 T1120,520 T1060,680 T1100,840 T1080,1000 T1100,1080" opacity="0.5" />
+  <path stroke="#ff4500" d="M200,100 Q280,180 240,280 T300,450 T220,600 T350,750 T280,900"/>
+  <path stroke="#ffd700" d="M1800,150 Q1700,250 1750,350 T1650,500 T1720,680 T1600,850 T1680,980"/>
+  <path stroke="#ff6b35" d="M960,0 Q940,120 1000,220 T920,380 T980,540 T930,720 T970,900 T950,1080"/>
+  <path stroke="#b8860b" d="M0,540 Q120,520 200,580 T350,540 T480,600 T620,530 T750,590"/>
+  <path stroke="#ff4500" d="M1920,540 Q1800,560 1720,500 T1580,550 T1450,490 T1320,550 T1200,500"/>
+  <path stroke="#e6e600" d="M400,200 Q450,280 520,250 T620,320 T580,420 T660,500 T620,620" opacity="0.6"/>
+  <path stroke="#ffd700" d="M1500,800 Q1450,720 1380,780 T1280,700 T1320,600 T1240,520 T1280,400" opacity="0.7"/>
+  <path stroke="#ff4500" d="M800,1080 Q820,960 880,880 T820,720 T900,580 T840,420 T920,280 T880,120 T900,0"/>
+  <path stroke="#ff6b35" d="M1100,0 Q1080,100 1140,200 T1060,360 T1120,520 T1060,680 T1100,840 T1080,1000 T1100,1080" opacity="0.5"/>
 </svg>
-
 <section class="hero">
   <h1 class="hero-title">Volcanic Ember</h1>
   <p class="hero-subtitle">An Obsidian Mythpunk Experience</p>
   <div class="ember-divider"></div>
   <p class="scroll-hint">Scroll to descend</p>
 </section>
-
 <section class="narrative-section" id="eruption">
-  <div class="narrative-content">
-    <div class="obsidian-frame"></div>
-    <span class="section-number">I. The Eruption</span>
-    <h2 class="section-title">Where Glass Forgets Its Heat</h2>
-    <div class="ember-divider"></div>
-    <p class="section-body">
-      In the beginning, there was only the <em>shatter</em>—obsidian goddesses born from the earth's furious exhale,
-      their bodies woven from cooled lava and the memory of fire. Each vein of magma beneath their skin tells a story
-      of rupture: the moment the mountain opened its throat and sang a song of sulfur and stone.
-    </p>
-    <p class="section-body" style="margin-top:1.5rem">
-      They do not weep. They <em>glow</em>. The cracks in their glass skin are not wounds but maps—cartographies
-      of every earthquake that ever loved them back. Floating embers crown their heads like halos forged in the
-      planet's molten core.
-    </p>
-  </div>
+  <div class="narrative-content"><div class="obsidian-frame"></div><span class="section-number">I. The Eruption</span><h2 class="section-title">Where Glass Forgets Its Heat</h2><div class="ember-divider"></div>
+  <p class="section-body">In the beginning, there was only the <em>shatter</em>—obsidian goddesses born from the earth's furious exhale, their bodies woven from cooled lava and the memory of fire.</p>
+  <p class="section-body" style="margin-top:1.5rem">They do not weep. They <em>glow</em>. The cracks in their glass skin are not wounds but maps—cartographies of every earthquake that ever loved them back.</p></div>
 </section>
-
 <section class="narrative-section" id="repair">
-  <div class="narrative-content">
-    <div class="obsidian-frame"></div>
-    <span class="section-number">II. The Magma Repair</span>
-    <h2 class="section-title">Kintsugi in Liquid Gold</h2>
-    <div class="ember-divider"></div>
-    <p class="section-body">
-      When the world breaks a goddess, she does not mend herself with silence. She summons the <em>magma kintsugi</em>—
-      rivers of molten gold and orange that pour into her fractures like luminous thread, sealing the wound with
-      something brighter than wholeness.
-    </p>
-    <p class="section-body" style="margin-top:1.5rem">
-      The repair is louder than the original form. Each golden seam pulses with volcanic memory, a hot artery
-      of remembered eruption. Her reflection in the obsidian mirror shows not a face, but a <em>landscape</em>:
-      scorched earth yielding to heat-resistant ferns, sulfur flowers blooming where lava kissed the ground.
-    </p>
-  </div>
+  <div class="narrative-content"><div class="obsidian-frame"></div><span class="section-number">II. The Magma Repair</span><h2 class="section-title">Kintsugi in Liquid Gold</h2><div class="ember-divider"></div>
+  <p class="section-body">When the world breaks a goddess, she does not mend herself with silence. She summons the <em>magma kintsugi</em>—rivers of molten gold that pour into her fractures like luminous thread.</p>
+  <p class="section-body" style="margin-top:1.5rem">Each golden seam pulses with volcanic memory. Her reflection shows not a face, but a <em>landscape</em>: scorched earth yielding to heat-resistant ferns.</p></div>
 </section>
-
 <section class="narrative-section" id="bloom">
-  <div class="narrative-content">
-    <div class="obsidian-frame"></div>
-    <span class="section-number">III. The Cinder Bloom</span>
-    <h2 class="section-title">Flowers From the Scorched</h2>
-    <div class="ember-divider"></div>
-    <p class="section-body">
-      After the burning comes the <em>bloom</em>. Fire-botanicals push through pumice and char: lava-flow moss
-      creeping in emerald arteries, heat-resistant ferns unfurling like green flames, sulfur flowers nodding
-      their yellow heads in the hot wind.
-    </p>
-    <p class="section-body" style="margin-top:1.5rem">
-      The goddesses gather these cinder blooms into crowns of ash and ember. They walk the scorched earth
-      not as destroyers, but as <em>gardeners of the inferno</em>—planting beauty in the very wounds they once
-      carved. Click anywhere to sow your own fire-flower into the obsidian soil.
-    </p>
-  </div>
+  <div class="narrative-content"><div class="obsidian-frame"></div><span class="section-number">III. The Cinder Bloom</span><h2 class="section-title">Flowers From the Scorched</h2><div class="ember-divider"></div>
+  <p class="section-body">After the burning comes the <em>bloom</em>. Fire-botanicals push through pumice and char: lava-flow moss, heat-resistant ferns, sulfur flowers nodding in the hot wind.</p>
+  <p class="section-body" style="margin-top:1.5rem">The goddesses walk the scorched earth as <em>gardeners of the inferno</em>. Click anywhere to sow your own fire-flower into the obsidian soil.</p></div>
 </section>
-
-<footer>
-  <p>Volcanic Obsidian Ember Weaver &mdash; Tactile Mythpunk Aesthetic</p>
-</footer>
-
+<footer><p>Volcanic Obsidian Ember Weaver &mdash; Tactile Mythpunk Aesthetic</p></footer>
 <script type="module">
   import gsap from 'https://esm.sh/gsap@3.12.5';
   import { ScrollTrigger } from 'https://esm.sh/gsap@3.12.5/ScrollTrigger';
   gsap.registerPlugin(ScrollTrigger);
-
-  const canvas = document.getElementById('volcanic-canvas');
-  const ctx = canvas.getContext('2d');
-  let width, height;
-
-  function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  // Magma veins
-  class MagmaVein {
-    constructor() {
-      this.reset();
-    }
-    reset() {
-      this.x = Math.random() * width;
-      this.y = Math.random() * height;
-      this.angle = Math.random() * Math.PI * 2;
-      this.speed = 0.2 + Math.random() * 0.4;
-      this.width = 1 + Math.random() * 3;
-      this.life = 0;
-      this.maxLife = 200 + Math.random() * 300;
-      this.hue = 10 + Math.random() * 30;
-      this.history = [];
-    }
-    update() {
-      this.angle += (Math.random() - 0.5) * 0.3;
-      this.x += Math.cos(this.angle) * this.speed;
-      this.y += Math.sin(this.angle) * this.speed;
-      this.life++;
-      this.history.push({ x: this.x, y: this.y });
-      if (this.history.length > 40) this.history.shift();
-      if (this.life > this.maxLife || this.x < -50 || this.x > width + 50 || this.y < -50 || this.y > height + 50) {
-        this.reset();
-      }
-    }
-    draw(ctx) {
-      if (this.history.length < 2) return;
-      const alpha = Math.sin((this.life / this.maxLife) * Math.PI) * 0.6;
-      ctx.beginPath();
-      ctx.moveTo(this.history[0].x, this.history[0].y);
-      for (let i = 1; i < this.history.length; i++) {
-        ctx.lineTo(this.history[i].x, this.history[i].y);
-      }
-      ctx.strokeStyle = `hsla(${this.hue}, 100%, 55%, ${alpha})`;
-      ctx.lineWidth = this.width;
-      ctx.lineCap = 'round';
-      ctx.stroke();
-      ctx.strokeStyle = `hsla(${this.hue + 15}, 100%, 70%, ${alpha * 0.5})`;
-      ctx.lineWidth = this.width * 0.4;
-      ctx.stroke();
-    }
-  }
-
-  const veins = Array.from({ length: 12 }, () => new MagmaVein());
-
-  // Particles
-  class Ember {
-    constructor(x, y, burst = false) {
-      this.x = x ?? Math.random() * width;
-      this.y = y ?? Math.random() * height;
-      this.vx = (Math.random() - 0.5) * (burst ? 3 : 0.8);
-      this.vy = -0.5 - Math.random() * (burst ? 2 : 1.2);
-      this.size = 1 + Math.random() * (burst ? 4 : 2.5);
-      this.life = 1;
-      this.decay = 0.003 + Math.random() * 0.007;
-      this.hue = 15 + Math.random() * 40;
-      this.burst = burst;
-    }
-    update() {
-      this.x += this.vx;
-      this.y += this.vy;
-      this.vx *= 0.99;
-      this.life -= this.decay;
-      if (this.y < -20 || this.life <= 0) {
-        if (!this.burst) {
-          this.x = Math.random() * width;
-          this.y = height + 20;
-          this.life = 1;
-          this.vx = (Math.random() - 0.5) * 0.8;
-          this.vy = -0.5 - Math.random() * 1.2;
-        }
-      }
-    }
-    draw(ctx) {
-      if (this.life <= 0) return;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(${this.hue}, 100%, 60%, ${this.life * 0.8})`;
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(${this.hue}, 100%, 50%, ${this.life * 0.15})`;
-      ctx.fill();
-    }
-  }
-
-  class Ash {
-    constructor() {
-      this.reset();
-    }
-    reset() {
-      this.x = Math.random() * width;
-      this.y = -10;
-      this.vx = (Math.random() - 0.5) * 0.5;
-      this.vy = 0.3 + Math.random() * 0.6;
-      this.size = 0.5 + Math.random() * 1.5;
-      this.life = 1;
-      this.decay = 0.002 + Math.random() * 0.004;
-    }
-    update() {
-      this.x += this.vx + Math.sin(this.y * 0.01) * 0.2;
-      this.y += this.vy;
-      this.life -= this.decay;
-      if (this.y > height + 10 || this.life <= 0) this.reset();
-    }
-    draw(ctx) {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(180, 170, 160, ${this.life * 0.35})`;
-      ctx.fill();
-    }
-  }
-
-  class Smoke {
-    constructor() {
-      this.reset();
-    }
-    reset() {
-      this.x = Math.random() * width;
-      this.y = height + 30;
-      this.vx = (Math.random() - 0.5) * 0.3;
-      this.vy = -0.8 - Math.random() * 1;
-      this.size = 10 + Math.random() * 30;
-      this.life = 1;
-      this.decay = 0.001 + Math.random() * 0.002;
-      this.hue = 0;
-      this.sat = 0;
-    }
-    update() {
-      this.x += this.vx + Math.sin(Date.now() * 0.001 + this.y * 0.005) * 0.2;
-      this.y += this.vy;
-      this.size += 0.05;
-      this.life -= this.decay;
-      if (this.y < -50 || this.life <= 0) this.reset();
-    }
-    draw(ctx) {
-      const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
-      g.addColorStop(0, `rgba(40, 35, 35, ${this.life * 0.12})`);
-      g.addColorStop(1, `rgba(20, 18, 18, 0)`);
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = g;
-      ctx.fill();
-    }
-  }
-
-  const embers = Array.from({ length: 80 }, () => new Ember());
-  const ashes = Array.from({ length: 60 }, () => new Ash());
-  const smokes = Array.from({ length: 15 }, () => new Smoke());
-  let burstEmbers = [];
-
-  // Mouse magma trail
-  const mouse = { x: -100, y: -100, active: false };
-  let mouseTrail = [];
-  window.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-    mouse.active = true;
-    mouseTrail.push({ x: e.clientX, y: e.clientY, life: 1 });
-    if (mouseTrail.length > 30) mouseTrail.shift();
-  });
-
-  // Click fire-flowers and rumble
+  const canvas=document.getElementById('volcanic-canvas');const ctx=canvas.getContext('2d');let width,height;
+  function resize(){width=canvas.width=window.innerWidth;height=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  class MagmaVein{constructor(){this.reset();}reset(){this.x=Math.random()*width;this.y=Math.random()*height;this.angle=Math.random()*Math.PI*2;this.speed=0.2+Math.random()*0.4;this.width=1+Math.random()*3;this.life=0;this.maxLife=200+Math.random()*300;this.hue=10+Math.random()*30;this.history=[];}update(){this.angle+=(Math.random()-0.5)*0.3;this.x+=Math.cos(this.angle)*this.speed;this.y+=Math.sin(this.angle)*this.speed;this.life++;this.history.push({x:this.x,y:this.y});if(this.history.length>40)this.history.shift();if(this.life>this.maxLife||this.x<-50||this.x>width+50||this.y<-50||this.y>height+50)this.reset();}draw(ctx){if(this.history.length<2)return;const alpha=Math.sin((this.life/this.maxLife)*Math.PI)*0.6;ctx.beginPath();ctx.moveTo(this.history[0].x,this.history[0].y);for(let i=1;i<this.history.length;i++)ctx.lineTo(this.history[i].x,this.history[i].y);ctx.strokeStyle=`hsla(${this.hue},100%,55%,${alpha})`;ctx.lineWidth=this.width;ctx.lineCap='round';ctx.stroke();}}
+  class Ember{constructor(x,y,burst=false){this.x=x??Math.random()*width;this.y=y??Math.random()*height;this.vx=(Math.random()-0.5)*(burst?3:0.8);this.vy=-0.5-Math.random()*(burst?2:1.2);this.size=1+Math.random()*(burst?4:2.5);this.life=1;this.decay=0.003+Math.random()*0.007;this.hue=15+Math.random()*40;this.burst=burst;}update(){this.x+=this.vx;this.y+=this.vy;this.vx*=0.99;this.life-=this.decay;if((this.y<-20||this.life<=0)&&!this.burst){this.x=Math.random()*width;this.y=height+20;this.life=1;this.vx=(Math.random()-0.5)*0.8;this.vy=-0.5-Math.random()*1.2;}}draw(ctx){if(this.life<=0)return;ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`hsla(${this.hue},100%,60%,${this.life*0.8})`;ctx.fill();}}
+  const veins=Array.from({length:12},()=>new MagmaVein());
+  const embers=Array.from({length:80},()=>new Ember());
+  let burstEmbers=[],mouseTrail=[];
+  window.addEventListener('mousemove',e=>{mouseTrail.push({x:e.clientX,y:e.clientY,life:1});if(mouseTrail.length>30)mouseTrail.shift();});
   let audioCtx;
-  function ensureAudio() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-  }
-
-  function playRumble() {
-    ensureAudio();
-    const t = audioCtx.currentTime;
-
-    // Low oscillator rumble
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(45, t);
-    osc.frequency.exponentialRampToValueAtTime(30, t + 0.4);
-    gain.gain.setValueAtTime(0.25, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start(t);
-    osc.stop(t + 0.8);
-
-    // Noise burst for drum impact
-    const bufferSize = audioCtx.sampleRate * 0.3;
-    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 3);
-    }
-    const noise = audioCtx.createBufferSource();
-    noise.buffer = buffer;
-    const noiseGain = audioCtx.createGain();
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(200, t);
-    filter.frequency.exponentialRampToValueAtTime(60, t + 0.3);
-    noiseGain.gain.setValueAtTime(0.4, t);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
-    noise.connect(filter);
-    filter.connect(noiseGain);
-    noiseGain.connect(audioCtx.destination);
-    noise.start(t);
-
-    // Sub-bass sine
-    const sub = audioCtx.createOscillator();
-    const subGain = audioCtx.createGain();
-    sub.type = 'sine';
-    sub.frequency.setValueAtTime(55, t);
-    sub.frequency.exponentialRampToValueAtTime(35, t + 0.5);
-    subGain.gain.setValueAtTime(0.3, t);
-    subGain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
-    sub.connect(subGain);
-    subGain.connect(audioCtx.destination);
-    sub.start(t);
-    sub.stop(t + 0.6);
-  }
-
-  function spawnFireFlower(x, y) {
-    for (let i = 0; i < 24; i++) {
-      burstEmbers.push(new Ember(x, y, true));
-    }
-    playRumble();
-  }
-
-  window.addEventListener('click', (e) => {
-    spawnFireFlower(e.clientX, e.clientY);
-  });
-
-  // Animation loop
-  function animate() {
-    ctx.fillStyle = 'rgba(10, 10, 10, 0.15)';
-    ctx.fillRect(0, 0, width, height);
-
-    // Obsidian base texture flicker
-    if (Math.random() < 0.02) {
-      ctx.fillStyle = 'rgba(15, 12, 12, 0.4)';
-      ctx.fillRect(0, 0, width, height);
-    }
-
-    // Heat distortion subtle grid
-    const time = Date.now() * 0.0005;
-    ctx.strokeStyle = 'rgba(255, 69, 0, 0.02)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < 8; i++) {
-      const y = ((height / 8) * i + Math.sin(time + i) * 20) % height;
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
-    }
-
-    // Magma veins
-    veins.forEach(v => { v.update(); v.draw(ctx); });
-
-    // Smoke
-    smokes.forEach(s => { s.update(); s.draw(ctx); });
-
-    // Mouse trail
-    for (let i = mouseTrail.length - 1; i >= 0; i--) {
-      const p = mouseTrail[i];
-      p.life -= 0.04;
-      if (p.life <= 0) {
-        mouseTrail.splice(i, 1);
-        continue;
-      }
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 2 + (1 - p.life) * 4, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(20, 100%, 60%, ${p.life * 0.5})`;
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 6 + (1 - p.life) * 10, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(30, 100%, 55%, ${p.life * 0.12})`;
-      ctx.fill();
-    }
-
-    // Embers
-    embers.forEach(e => { e.update(); e.draw(ctx); });
-
-    // Burst embers
-    for (let i = burstEmbers.length - 1; i >= 0; i--) {
-      const e = burstEmbers[i];
-      e.update();
-      e.draw(ctx);
-      if (e.life <= 0 || e.y < -50) burstEmbers.splice(i, 1);
-    }
-
-    // Ash
-    ashes.forEach(a => { a.update(); a.draw(ctx); });
-
-    requestAnimationFrame(animate);
-  }
+  function ensureAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();}
+  function playRumble(){ensureAudio();const t=audioCtx.currentTime;const osc=audioCtx.createOscillator();const gain=audioCtx.createGain();osc.type='sawtooth';osc.frequency.setValueAtTime(45,t);osc.frequency.exponentialRampToValueAtTime(30,t+0.4);gain.gain.setValueAtTime(0.25,t);gain.gain.exponentialRampToValueAtTime(0.001,t+0.8);osc.connect(gain);gain.connect(audioCtx.destination);osc.start(t);osc.stop(t+0.8);}
+  function spawnFireFlower(x,y){for(let i=0;i<24;i++)burstEmbers.push(new Ember(x,y,true));playRumble();}
+  window.addEventListener('click',e=>spawnFireFlower(e.clientX,e.clientY));
+  function animate(){ctx.fillStyle='rgba(10,10,10,0.15)';ctx.fillRect(0,0,width,height);veins.forEach(v=>{v.update();v.draw(ctx);});for(let i=mouseTrail.length-1;i>=0;i--){const p=mouseTrail[i];p.life-=0.04;if(p.life<=0){mouseTrail.splice(i,1);continue;}ctx.beginPath();ctx.arc(p.x,p.y,2+(1-p.life)*4,0,Math.PI*2);ctx.fillStyle=`hsla(20,100%,60%,${p.life*0.5})`;ctx.fill();}embers.forEach(e=>{e.update();e.draw(ctx);});for(let i=burstEmbers.length-1;i>=0;i--){const e=burstEmbers[i];e.update();e.draw(ctx);if(e.life<=0||e.y<-50)burstEmbers.splice(i,1);}requestAnimationFrame(animate);}
   animate();
-
-  // GSAP ScrollTrigger animations
-  gsap.utils.toArray('.narrative-section').forEach((section, i) => {
-    const content = section.querySelector('.narrative-content');
-    gsap.from(content, {
-      scrollTrigger: {
-        trigger: section,
-        start: 'top 80%',
-        end: 'top 30%',
-        toggleActions: 'play none none reverse',
-      },
-      y: 80,
-      opacity: 0,
-      duration: 1.2,
-      ease: 'power3.out',
-      delay: i * 0.1,
-    });
-
-    const title = section.querySelector('.section-title');
-    gsap.from(title, {
-      scrollTrigger: {
-        trigger: section,
-        start: 'top 75%',
-        toggleActions: 'play none none reverse',
-      },
-      x: -40,
-      opacity: 0,
-      duration: 1,
-      ease: 'power2.out',
-    });
-  });
-
-  // Hero title entrance
-  gsap.from('.hero-title', {
-    y: -60,
-    opacity: 0,
-    duration: 1.6,
-    ease: 'power3.out',
-    delay: 0.3,
-  });
-
-  // Ember divider pulse synced
-  gsap.utils.toArray('.ember-divider').forEach(div => {
-    gsap.to(div, {
-      boxShadow: '0 0 20px #ff4500, 0 0 40px #ffd700',
-      duration: 1.5,
-      repeat: -1,
-      yoyo: true,
-      ease: 'sine.inOut',
-    });
-  });
-
-  // Parallax for kintsugi overlay
-  window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const svg = document.querySelector('.kintsugi-overlay');
-    svg.style.transform = `translateY(${scrollY * 0.15}px)`;
-  });
+  gsap.utils.toArray('.narrative-section').forEach((s,i)=>{gsap.from(s.querySelector('.narrative-content'),{scrollTrigger:{trigger:s,start:'top 80%',toggleActions:'play none none reverse'},y:80,opacity:0,duration:1.2,ease:'power3.out'});});
+  gsap.from('.hero-title',{y:-60,opacity:0,duration:1.6,ease:'power3.out',delay:0.3});
+  gsap.utils.toArray('.ember-divider').forEach(d=>gsap.to(d,{boxShadow:'0 0 20px #ff4500, 0 0 40px #ffd700',duration:1.5,repeat:-1,yoyo:true,ease:'sine.inOut'}));
+  window.addEventListener('scroll',()=>{document.querySelector('.kintsugi-overlay').style.transform=`translateY(${window.scrollY*0.15}px)`;});
 </script>
-
 </body>
 </html>
